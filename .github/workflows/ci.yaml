@@ -1,0 +1,48 @@
+---
+name: ci
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v4
+      - name: TODO
+        run: echo TODO
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v4
+      - name: TODO
+        run: echo TODO
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v4
+      - name: TODO
+        run: echo TODO
+...
