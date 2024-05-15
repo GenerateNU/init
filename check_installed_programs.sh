@@ -6,24 +6,19 @@ else
     read -ra programs
 fi
 
-for program in "${programs[@]}"; do
-    IFS='@' read -r name version <<< "$program"
+missing=false
 
-    if [ -n "$version" ]; then
-        if command -v "$name" >/dev/null && "$name" --version | grep -qF "$version"; then
-            echo "$name $version is installed"
-        else
-            echo "$name $version is not installed"
-            exit 1
-        fi
+for program in "${programs[@]}"; do
+    if nix-env -q "$program" > /dev/null 2>&1; then
+        echo "$program is installed in the current Nix profile"
     else
-        if command -v "$name" >/dev/null; then
-            echo "$name is installed"
-        else
-            echo "$name is not installed"
-            exit 1
-        fi
+        echo "$program is not installed in the current Nix profile"
+        missing=true
     fi
 done
 
-exit 0
+if $missing; then
+    exit 1
+else
+    exit 0
+fi
