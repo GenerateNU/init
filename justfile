@@ -3,19 +3,34 @@
 
 # list available recipes
 default:
-  @just --list
+    @just --list
 
 # run static checks
-check: shellcheck
+check: check_shell check_nix
 
-# check all shell scripts in the `scripts/` directory
-shellcheck:
-  find scripts -type f | xargs shellcheck
+# format code
+fmt: fmt_just fmt_nix
+
+# shellcheck all shell scripts in the `scripts/` directory
+check_shell:
+    @find scripts -type f -name '*.sh' | xargs shellcheck
+
+# check Nix flake
+check_nix:
+    @nix flake check --all-systems 2> /dev/null
+
+# format justfile
+fmt_just:
+    @just --unstable --fmt 2> /dev/null
+
+# format Nix code
+fmt_nix:
+    @nix fmt 2> /dev/null
 
 # install the Nix package manager globally
 install_nix:
-  ./scripts/install_nix.sh
+    @./scripts/install_nix.sh
 
 # ensure all PROGRAMS are installed via Nix
 check_installed_programs +PROGRAMS:
-  ./scripts/check_installed_programs.sh {{PROGRAMS}}
+    @./scripts/check_installed_programs.sh {{ PROGRAMS }}
