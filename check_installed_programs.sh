@@ -1,4 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env sh
+
+green='\033[0;32m'
+red='\033[0;31m'
+reset='\033[0m'
+
+if ! command -v nix > /dev/null 2>&1; then
+    echo "${red}Error: 'nix' command not found. Please install Nix.${reset}"
+    exit 1
+fi
 
 if [ $# -gt 0 ]; then
     programs=("$@")
@@ -9,10 +18,10 @@ fi
 missing=false
 
 for program in "${programs[@]}"; do
-    if nix-env -q "$program" > /dev/null 2>&1; then
-        echo "$program is installed in the current Nix profile"
+    if find /nix/store -mindepth 1 -maxdepth 1 -type d -name "*-$program-*" -print -quit | grep -q .; then
+        echo "${green}$program is installed in the Nix store${reset}"
     else
-        echo "$program is not installed in the current Nix profile"
+        echo "${red}$program is not installed in the Nix store${reset}"
         missing=true
     fi
 done
