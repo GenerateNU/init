@@ -15,7 +15,7 @@ case "$(./"$(dirname "$0")"/get_os.sh 2> /dev/null)" in
     printf "Detected OS: WSL\n"
     install_nix
     ;;
-  "DARWIN")
+  "MACOS")
     printf "Detected OS: macOS\n"
     install_nix
     ;;
