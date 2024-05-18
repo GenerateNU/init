@@ -1,15 +1,14 @@
 #!/usr/bin/env sh
 
-# Read in a list of commands to detect.
-if [ $# -gt 0 ]; then
-  commands=("$@")
-else
-  read -ra commands
+# Ensure at least one command was provided.
+if [ $# -lt 1 ]; then
+  printf "\033[31;1merror\033[0m: no commands provided\n"
+  exit 1
 fi
 
 # Search for each command.
 missing=false
-for command in "${commands[@]}"; do
+for command in "$@"; do
   if command -v "$command" 1> /dev/null 2>&1; then
     printf "\033[32;1m%s detected\033[0m\n" "$command"
   else

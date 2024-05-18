@@ -6,16 +6,15 @@ if ! ./"$(dirname "$0")"/detect_commands.sh "nix" 1> /dev/null 2>&1; then
   exit 1
 fi
 
-# Read in a list of programs to detect.
-if [ $# -gt 0 ]; then
-  programs=("$@")
-else
-  read -ra programs
+# Ensure at least one program was provided.
+if [ $# -lt 1 ]; then
+  printf "\033[31;1merror\033[0m: no programs provided\n"
+  exit 1
 fi
 
 # Search for each program in the Nix store.
 missing=false
-for program in "${programs[@]}"; do
+for program in "$@"; do
   if find /nix/store -mindepth 1 -maxdepth 1 -type d -name "*-$program-*" -print -quit | grep -q . 1> /dev/null 2>&1; then
     printf "\033[32;1m%s detected\033[0m\n" "$program"
   else
