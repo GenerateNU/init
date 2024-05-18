@@ -32,5 +32,5 @@ install_nix:
     @./scripts/install_nix.sh
 
 # ensure all PROGRAMS are installed via Nix
-check_installed_programs +PROGRAMS:
-    @./scripts/check_installed_programs.sh {{ PROGRAMS }}
+detect_installed_programs +PROGRAMS:
+    -@./scripts/detect_installed_programs.sh {{ PROGRAMS }}
