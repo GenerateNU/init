@@ -1,12 +1,18 @@
 from typing import Callable
 import typer
+from art import text2art
 from pathlib import Path
 from rich.console import Console
 from templates import get_flake, MIT_LICENSE, PULL_REQUEST_TEMPLATE
 from utils import Directory, File, ValidationError
 
+stdout_console = Console()
+stderr_console = Console(stderr=True)
+
+startup_art = text2art("INIT", "speed")
+stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
+
 app = typer.Typer()
-err_console = Console(stderr=True)
 
 def validate_name(value: str) -> str:
     if not value or not value.strip():
@@ -29,7 +35,7 @@ def prompt_with_validation(prompt_text: str, callback: Callable) -> str:
         try:
             return callback(value)
         except ValidationError as e:
-            err_console.print(f"[bold red]Error:[/bold red] {e}")
+            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
 
 def create_directories(directories: list[Directory], base_path: Path) -> None:
     for directory in directories:
@@ -64,7 +70,7 @@ def initialize_repo(
         try:
             validate_name(name)
         except ValidationError as e:
-            err_console.print(f"[bold red]Error:[/bold red] {e}")
+            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
             name = prompt_with_validation("Enter the name of the repository", validate_name)
 
     if path is None:
@@ -73,7 +79,7 @@ def initialize_repo(
         try:
             validate_path(path)
         except ValidationError as e:
-            err_console.print(f"[bold red]Error:[/bold red] {e}")
+            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
             path = prompt_with_validation("Enter the path to the repository", validate_path)
 
     if pkgs is None:
@@ -82,7 +88,7 @@ def initialize_repo(
         try:
             validate_pkgs(pkgs)
         except ValidationError as e:
-            err_console.print(f"[bold red]Error:[/bold red] {e}")
+            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
             pkgs = prompt_with_validation("Enter the packages to include in the flake.nix file separated by a single space", validate_pkgs)
     
     BASE_PATH = path / name
