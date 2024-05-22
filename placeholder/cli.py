@@ -45,8 +45,8 @@ def create_directories(directories: list[Directory], base_path: Path) -> None:
 def create_files(files: list[File], base_path: Path) -> None:
     for file in files:
         file_path = base_path / file.path
-        with open(file_path, "w") as f:
-            f.write(file.content.strip() + "\n" if file.content else "")
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        file_path.write_text(file.content.strip() + "\n" if file.content else "")
 
 @app.command()
 def initialize_repo(
