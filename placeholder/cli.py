@@ -1,4 +1,4 @@
-from typing import Callable, Tuple
+from typing import Callable
 import typer
 from art import text2art
 from pathlib import Path
@@ -7,6 +7,7 @@ from rich.prompt import Confirm, Prompt
 from templates import get_flake, MIT_LICENSE, PULL_REQUEST_TEMPLATE
 from utils import Directory, File, ValidationError
 
+app = typer.Typer()
 stdout_console = Console()
 stderr_console = Console(stderr=True)
 
@@ -20,19 +21,17 @@ startup_art = """
 """
 stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
 
-app = typer.Typer()
-
-def parse_pkgs(value: str) -> Tuple[str, list[str]]:
+def parse_pkgs(value: str) -> list[str]:
     if not value or not value.strip():
         raise ValidationError("Packages cannot be empty.")
     return value.split()
 
-def parse_name(value: str) -> Tuple[str, str]:
+def parse_name(value: str) -> str:
     if not value or not value.strip():
         raise ValidationError("Name cannot be empty.")
     return value
 
-def parse_path(value: str) -> Tuple[str, Path]:
+def parse_path(value: str) -> Path:
     if not value or not value.strip():
         raise ValidationError("Path cannot be empty.")
     return Path(value)
@@ -45,7 +44,7 @@ def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
             if Confirm.ask(f"Are you sure you want to use [bold yellow]{value}[/bold yellow]?"):
                 return parsed_value
         except ValidationError as e:
-            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
+            stderr_console.print(f"[bold red]Validation Error:[/bold red] {e}")
 
 def create_directories(directories: list[Directory], base_path: Path) -> None:
     for directory in directories:
