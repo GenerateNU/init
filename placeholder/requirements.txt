@@ -1,4 +1,3 @@
-art
 typer
 pathlib
 rich

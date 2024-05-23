@@ -1,7 +1,6 @@
 import os
 from typing import Callable
 import typer
-from art import text2art
 from pathlib import Path
 from rich.console import Console
 from rich.prompt import Confirm, Prompt
@@ -12,7 +11,6 @@ app = typer.Typer()
 stdout_console = Console()
 stderr_console = Console(stderr=True)
 
-# startup_art = text2art("INIT", "smslant")
 startup_art = """
    _____  ____________
   /  _/ |/ /  _/_  __/
@@ -42,7 +40,7 @@ def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
         value = Prompt.ask(f"[bold cyan]{prompt_text}[/bold cyan]")
         try:
             parsed_value = parse(value)
-            if Confirm.ask(f"Are you sure you want to use [bold yellow]{value}[/bold yellow]?"):
+            if Confirm.ask(f"[bold cyan]Are you sure you want to use[/bold cyan] [bold yellow]{value}[/bold yellow]?"):
                 return parsed_value
         except ValidationError as e:
             stderr_console.print(f"[bold red]Validation Error:[/bold red] {e}")
@@ -59,7 +57,7 @@ def create_files(files: list[File], base_path: Path) -> None:
         file_path.write_text(file.content.strip() + "\n" if file.content else "")
 
 @app.command()
-def initialize_repo(
+def create_repo(
     pkgs: str = typer.Option(
         ...,
         help="List of packages to include in the flake.nix file"
@@ -68,7 +66,7 @@ def initialize_repo(
     
     pkgs = parse_pkgs(pkgs)
     name = prompt_and_parse("Enter the name of the repository", parse_name)
-    if Confirm.ask("Do you want to create the repository in the current directory?"):
+    if Confirm.ask("[bold cyan]Do you want to create the repository in the current directory?[/bold cyan]"):
         path = Path(os.getcwd())
     else:
         path = prompt_and_parse("Enter the path to the repository", parse_path)
