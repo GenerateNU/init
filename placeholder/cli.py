@@ -1,3 +1,4 @@
+import os
 from typing import Callable
 import typer
 from art import text2art
@@ -67,7 +68,10 @@ def initialize_repo(
     
     pkgs = parse_pkgs(pkgs)
     name = prompt_and_parse("Enter the name of the repository", parse_name)
-    path = prompt_and_parse("Enter the path to the repository", parse_path)
+    if Confirm.ask("Do you want to create the repository in the current directory?"):
+        path = Path(os.getcwd())
+    else:
+        path = prompt_and_parse("Enter the path to the repository", parse_path)
     
     BASE_PATH = path / name
     BASE_PATH.mkdir(parents=True, exist_ok=True)
