@@ -1,39 +1,49 @@
-from typing import Callable
+from typing import Callable, Tuple
 import typer
 from art import text2art
 from pathlib import Path
 from rich.console import Console
+from rich.prompt import Confirm, Prompt
 from templates import get_flake, MIT_LICENSE, PULL_REQUEST_TEMPLATE
 from utils import Directory, File, ValidationError
 
 stdout_console = Console()
 stderr_console = Console(stderr=True)
 
-startup_art = text2art("INIT", "speed")
+# startup_art = text2art("INIT", "smslant")
+startup_art = """
+   _____  ____________
+  /  _/ |/ /  _/_  __/
+ _/ //    // /  / /   
+/___/_/|_/___/ /_/    
+
+"""
 stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
 
 app = typer.Typer()
 
-def validate_name(value: str) -> str:
-    if not value or not value.strip():
-        raise ValidationError("Name cannot be empty.")
-    return value
-
-def validate_path(value: str) -> Path:
-    if not value or not value.strip():
-        raise ValidationError("Path cannot be empty.")
-    return Path(value)
-
-def validate_pkgs(value: str) -> list[str]:
+def parse_pkgs(value: str) -> Tuple[str, list[str]]:
     if not value or not value.strip():
         raise ValidationError("Packages cannot be empty.")
     return value.split()
 
-def prompt_with_validation(prompt_text: str, callback: Callable) -> str:
+def parse_name(value: str) -> Tuple[str, str]:
+    if not value or not value.strip():
+        raise ValidationError("Name cannot be empty.")
+    return value
+
+def parse_path(value: str) -> Tuple[str, Path]:
+    if not value or not value.strip():
+        raise ValidationError("Path cannot be empty.")
+    return Path(value)
+    
+def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
     while True:
-        value = typer.prompt(prompt_text)
+        value = Prompt.ask(f"[bold cyan]{prompt_text}[/bold cyan]")
         try:
-            return callback(value)
+            parsed_value = parse(value)
+            if Confirm.ask(f"Are you sure you want to use [bold yellow]{value}[/bold yellow]?"):
+                return parsed_value
         except ValidationError as e:
             stderr_console.print(f"[bold red]Error:[/bold red] {e}")
 
@@ -50,46 +60,15 @@ def create_files(files: list[File], base_path: Path) -> None:
 
 @app.command()
 def initialize_repo(
-    name: str = typer.Option(
-        None,
-        help="Name of the repository"
-    ),
-    path: Path = typer.Option(
-        None,
-        help="Path to the repository"
-    ),
     pkgs: str = typer.Option(
-        None,
+        ...,
         help="List of packages to include in the flake.nix file"
     )
 ) -> None:
     
-    if name is None:
-        name = prompt_with_validation("Enter the name of the repository", validate_name)
-    else:
-        try:
-            validate_name(name)
-        except ValidationError as e:
-            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
-            name = prompt_with_validation("Enter the name of the repository", validate_name)
-
-    if path is None:
-        path = prompt_with_validation("Enter the path to the repository", validate_path)
-    else:
-        try:
-            validate_path(path)
-        except ValidationError as e:
-            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
-            path = prompt_with_validation("Enter the path to the repository", validate_path)
-
-    if pkgs is None:
-        pkgs = prompt_with_validation("Enter the packages to include in the flake.nix file separated by a single space", validate_pkgs)
-    else:
-        try:
-            validate_pkgs(pkgs)
-        except ValidationError as e:
-            stderr_console.print(f"[bold red]Error:[/bold red] {e}")
-            pkgs = prompt_with_validation("Enter the packages to include in the flake.nix file separated by a single space", validate_pkgs)
+    pkgs = parse_pkgs(pkgs)
+    name = prompt_and_parse("Enter the name of the repository", parse_name)
+    path = prompt_and_parse("Enter the path to the repository", parse_path)
     
     BASE_PATH = path / name
     BASE_PATH.mkdir(parents=True, exist_ok=True)
