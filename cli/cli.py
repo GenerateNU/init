@@ -20,20 +20,23 @@ startup_art = """
 """
 stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
 
-def parse_pkgs(value: str) -> list[str]:
-    if not value or not value.strip():
+def parse_pkgs(val: str) -> list[str]:
+    stripped_val = val.strip()
+    if not stripped_val:
         raise ValidationError("Packages cannot be empty.")
-    return value.split()
+    return stripped_val.split()
 
-def parse_name(value: str) -> str:
-    if not value or not value.strip():
+def parse_name(val: str) -> str:
+    stripped_val = val.strip()
+    if not stripped_val:
         raise ValidationError("Name cannot be empty.")
-    return value
+    return stripped_val
 
-def parse_path(value: str) -> Path:
-    if not value or not value.strip():
+def parse_path(val: str) -> Path:
+    stripped_val = val.strip()
+    if not stripped_val:
         raise ValidationError("Path cannot be empty.")
-    return Path(value)
+    return Path(stripped_val)
     
 def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
     while True:
@@ -43,7 +46,7 @@ def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
             if Confirm.ask(f"[bold cyan]Are you sure you want to use[/bold cyan] [bold yellow]{value}[/bold yellow]?"):
                 return parsed_value
         except ValidationError as e:
-            stderr_console.print(f"[bold red]Validation Error:[/bold red] {e}")
+            stderr_console.print(f"[red]Validation Error:[/red] {e}")
 
 def create_directories(directories: list[Directory], base_path: Path) -> None:
     for directory in directories:
