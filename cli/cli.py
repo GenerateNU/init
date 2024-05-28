@@ -38,6 +38,7 @@ def parse_path(val: str) -> Path:
         raise ValidationError("Path cannot be empty.")
     return Path(stripped_val)
     
+# repeatedly prompt user for input and parse it until user confirms
 def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
     while True:
         value = Prompt.ask(f"[bold cyan]{prompt_text}[/bold cyan]")
@@ -67,16 +68,21 @@ def create_repo(
     )
 ) -> None:
     
+    # parse input arguments
     pkgs = parse_pkgs(pkgs)
+
+    # prompt user for repository name and path
     name = prompt_and_parse("Enter the name of the repository", parse_name)
     if Confirm.ask("[bold cyan]Do you want to create the repository in the current directory?[/bold cyan]"):
         path = Path(os.getcwd())
     else:
         path = prompt_and_parse("Enter the path to the repository", parse_path)
     
+    # define base path and create root directory
     BASE_PATH = path / name
     BASE_PATH.mkdir(parents=True, exist_ok=True)
 
+    # list of predefined objects to create
     objects = [
         # root files
         File("flake.nix", get_flake(pkgs)),
