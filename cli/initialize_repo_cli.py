@@ -85,14 +85,14 @@ def create_repo(
     # list of predefined objects to create
     objects = [
         # root files
-        File("flake.nix", get_flake(pkgs)),
-        File("LICENSE", MIT_LICENSE),
+        File("flake.nix", content=get_flake(pkgs)),
+        File("LICENSE", content=MIT_LICENSE),
         File(".gitignore"),
         File("README.md"),
 
         # .github
         Directory(".github/workflows"),
-        File(".github/pull_request_template.md", PULL_REQUEST_TEMPLATE),
+        File(".github/pull_request_template.md", content=PULL_REQUEST_TEMPLATE),
 
         # backend
         Directory("backend/src"),
