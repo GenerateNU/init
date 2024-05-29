@@ -40,8 +40,7 @@ def command_line_mode(args) -> tuple[str, str, str]:
     
     return backend_language, frontend_language, database
 
-def main():
-
+def main() -> None:
     # Create the Argument Parser
     parser = argparse.ArgumentParser(description="Gather project requirements.")
     parser.add_argument('-backend', type=str, help="Backend language of choice")
