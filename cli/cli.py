@@ -2,12 +2,12 @@ import argparse
 import inquirer
 
 # Predefined Options
-backend_languages = ['Python', 'Java', 'C++', 'RUST', 'Go']
+backend_languages = ['Python', 'Java', 'C++', 'Rust', 'Go']
 frontend_languages = ['JavaScript', 'TypeScript']
 databases = ['PostgreSQL', 'MySQL', 'SQLite', 'MongoDB']
 
 # Setup for the Interactive flow of the CLI
-def interactive_mode():
+def interactive_mode() -> tuple[str, str, str]:
     questions = [
         inquirer.List('backend_language',
                       message="What backend language do you want to use?",
@@ -26,7 +26,7 @@ def interactive_mode():
     return answers['backend_language'], answers['frontend_language'], answers['database']
 
 # Setup for the Single Command flow of the CLI
-def command_line_mode(args):
+def command_line_mode(args) -> tuple[str, str, str]:
     backend_language, frontend_language, database = args.backend, args.frontend, args.db
 
     if backend_language not in backend_languages:
