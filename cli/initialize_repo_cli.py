@@ -1,5 +1,6 @@
 import os
 from typing import Callable
+import inquirer
 import typer
 from pathlib import Path
 from rich.console import Console
@@ -11,20 +12,27 @@ app = typer.Typer()
 stdout_console = Console()
 stderr_console = Console(stderr=True)
 
-startup_art = """
-   _____  ____________
-  /  _/ |/ /  _/_  __/
- _/ //    // /  / /   
-/___/_/|_/___/ /_/    
+BACKEND_LANGUAGES = ['Python', 'Java', 'C++', 'Rust', 'Go', 'None']
+FRONTEND_LANGUAGES = ['JavaScript', 'TypeScript', 'None']
+DATABASES = ['PostgreSQL', 'MySQL', 'SQLite', 'MongoDB', 'None']
 
-"""
-stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
-
-def parse_pkgs(val: str) -> list[str]:
+def parse_backend(val: str) -> str:
     stripped_val = val.strip()
-    if not stripped_val:
-        raise ValidationError("Packages cannot be empty.")
-    return stripped_val.split()
+    if stripped_val not in BACKEND_LANGUAGES:
+        raise ValidationError(f"Invalid backend language. Choose from {', '.join(BACKEND_LANGUAGES)}")
+    return stripped_val
+
+def parse_frontend(val: str) -> str:
+    stripped_val = val.strip()
+    if stripped_val not in FRONTEND_LANGUAGES:
+        raise ValidationError(f"Invalid frontend language. Choose from {', '.join(FRONTEND_LANGUAGES)}")
+    return stripped_val
+
+def parse_database(val: str) -> str:
+    stripped_val = val.strip()
+    if stripped_val not in DATABASES:
+        raise ValidationError(f"Invalid database. Choose from {', '.join(DATABASES)}")
+    return stripped_val
 
 def parse_name(val: str) -> str:
     stripped_val = val.strip()
@@ -37,9 +45,19 @@ def parse_path(val: str) -> Path:
     if not stripped_val:
         raise ValidationError("Path cannot be empty.")
     return Path(stripped_val)
+
+def prompt_select_and_parse(prompt_text: str, choices: list[str], parse: Callable) -> str:
+    questions = [
+        inquirer.List('choice',
+            message=prompt_text,
+            choices=choices
+        )
+    ]
+    answers = inquirer.prompt(questions)
+    return parse(answers['choice'])
     
 # repeatedly prompt user for input and parse it until user confirms
-def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
+def prompt_text_and_parse(prompt_text: str, parse: Callable) -> str:
     while True:
         value = Prompt.ask(f"[bold cyan]{prompt_text}[/bold cyan]")
         try:
@@ -62,21 +80,63 @@ def create_files(files: list[File], base_path: Path) -> None:
 
 @app.command()
 def create_repo(
-    pkgs: str = typer.Option(
-        ...,
-        help="List of packages to include in the flake.nix file"
-    )
+    backend: str = typer.Option(
+        None,
+        help="Backend language of choice"
+    ),
+    frontend: str = typer.Option(
+        None,
+        help="Frontend language of choice"
+    ),
+    database: str = typer.Option(
+        None,
+        help="Database of choice"
+    ),
 ) -> None:
-    
-    # parse input arguments
-    pkgs = parse_pkgs(pkgs)
+    startup_art = """
+   _____  ____________
+  /  _/ |/ /  _/_  __/
+ _/ //    // /  / /   
+/___/_/|_/___/ /_/    
+"""
+    stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
+
+    if backend is None:
+        backend = prompt_select_and_parse("Select the backend language", BACKEND_LANGUAGES, parse_backend)
+    else:
+        try:
+            backend = parse_backend(backend)
+        except ValidationError as e:
+            stderr_console.print(f"[red]Validation Error:[/red] {e}")
+            backend = prompt_select_and_parse("Select the backend language", BACKEND_LANGUAGES, parse_backend)
+
+    if frontend is None:
+        frontend = prompt_select_and_parse("Select the frontend language", FRONTEND_LANGUAGES, parse_frontend)
+    else:
+        try:
+            frontend = parse_frontend(frontend)
+        except ValidationError as e:
+            stderr_console.print(f"[red]Validation Error:[/red] {e}")
+            frontend = prompt_select_and_parse("Select the frontend language", FRONTEND_LANGUAGES, parse_frontend)
+
+    if database is None:
+        database = prompt_select_and_parse("Select the database", DATABASES, parse_database)
+    else:
+        try:
+            database = parse_database(database)
+        except ValidationError as e:
+            stderr_console.print(f"[red]Validation Error:[/red] {e}")
+            database = prompt_select_and_parse("Select the database", DATABASES, parse_database)
+        
+    PKGS = [backend, frontend, database]
+    FILTERED_PKGS = [pkg for pkg in PKGS if pkg != "None"]
 
     # prompt user for repository name and path
-    name = prompt_and_parse("Enter the name of the repository", parse_name)
+    name = prompt_text_and_parse("Enter the name of the repository", parse_name)
     if Confirm.ask("[bold cyan]Do you want to create the repository in the current directory?[/bold cyan]"):
         path = Path(os.getcwd())
     else:
-        path = prompt_and_parse("Enter the path to the repository", parse_path)
+        path = prompt_text_and_parse("Enter the path to the repository", parse_path)
     
     # define base path and create root directory
     BASE_PATH = path / name
@@ -85,7 +145,7 @@ def create_repo(
     # list of predefined objects to create
     objects = [
         # root files
-        File("flake.nix", content=get_flake(pkgs)),
+        File("flake.nix", content=get_flake(FILTERED_PKGS)),
         File("LICENSE", content=MIT_LICENSE),
         File(".gitignore"),
         File("README.md"),
