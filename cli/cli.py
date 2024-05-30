@@ -46,7 +46,7 @@ def parse_path(val: str) -> Path:
         raise ValidationError("Path cannot be empty.")
     return Path(stripped_val)
 
-def prompt_select_and_parse(prompt_text: str, choices: list[str], parse: Callable) -> str:
+def prompt_select_and_parse(prompt_text: str, choices: list[str]) -> str:
     questions = [
         inquirer.List('choice',
             message=prompt_text,
@@ -54,7 +54,7 @@ def prompt_select_and_parse(prompt_text: str, choices: list[str], parse: Callabl
         )
     ]
     answers = inquirer.prompt(questions)
-    return parse(answers['choice'])
+    return answers['choice']
     
 # repeatedly prompt user for input and parse it until user confirms
 def prompt_text_and_parse(prompt_text: str, parse: Callable) -> str:
@@ -102,31 +102,31 @@ def create_repo(
     stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
 
     if backend is None:
-        backend = prompt_select_and_parse("Select the backend language", BACKEND_LANGUAGES, parse_backend)
+        backend = prompt_select_and_parse("Select the backend language", BACKEND_LANGUAGES)
     else:
         try:
             backend = parse_backend(backend)
         except ValidationError as e:
             stderr_console.print(f"[red]Validation Error:[/red] {e}")
-            backend = prompt_select_and_parse("Select the backend language", BACKEND_LANGUAGES, parse_backend)
+            backend = prompt_select_and_parse("Select the backend language", BACKEND_LANGUAGES)
 
     if frontend is None:
-        frontend = prompt_select_and_parse("Select the frontend language", FRONTEND_LANGUAGES, parse_frontend)
+        frontend = prompt_select_and_parse("Select the frontend language", FRONTEND_LANGUAGES)
     else:
         try:
             frontend = parse_frontend(frontend)
         except ValidationError as e:
             stderr_console.print(f"[red]Validation Error:[/red] {e}")
-            frontend = prompt_select_and_parse("Select the frontend language", FRONTEND_LANGUAGES, parse_frontend)
+            frontend = prompt_select_and_parse("Select the frontend language", FRONTEND_LANGUAGES)
 
     if database is None:
-        database = prompt_select_and_parse("Select the database", DATABASES, parse_database)
+        database = prompt_select_and_parse("Select the database", DATABASES)
     else:
         try:
             database = parse_database(database)
         except ValidationError as e:
             stderr_console.print(f"[red]Validation Error:[/red] {e}")
-            database = prompt_select_and_parse("Select the database", DATABASES, parse_database)
+            database = prompt_select_and_parse("Select the database", DATABASES)
         
     PKGS = [backend, frontend, database]
     FILTERED_PKGS = [pkg for pkg in PKGS if pkg != "None"]
