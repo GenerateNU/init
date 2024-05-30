@@ -17,18 +17,6 @@ BACKEND_LANGUAGES = ['Python', 'Java', 'C++', 'Rust', 'Go', 'None']
 FRONTEND_LANGUAGES = ['JavaScript', 'TypeScript', 'None']
 DATABASES = ['PostgreSQL', 'MySQL', 'SQLite', 'MongoDB', 'None']
 
-def parse_name(val: str) -> str:
-    stripped_val = val.strip()
-    if not stripped_val:
-        raise ValidationError("Name cannot be empty.")
-    return stripped_val
-
-def parse_path(val: str) -> Path:
-    stripped_val = val.strip()
-    if not stripped_val:
-        raise ValidationError("Path cannot be empty.")
-    return Path(stripped_val)
-
 def select_pkgs() -> str:
     bold_cyan_code = '\033[1;96m'
     reset_code = '\033[0m'
@@ -53,6 +41,18 @@ def select_pkgs() -> str:
     except KeyboardInterrupt:
         stderr_console.print("[red]Aborted.[/red]")
         sys.exit(1)
+
+def parse_name(val: str) -> str:
+    stripped_val = val.strip()
+    if not stripped_val:
+        raise ValidationError("Name cannot be empty.")
+    return stripped_val
+
+def parse_path(val: str) -> Path:
+    stripped_val = val.strip()
+    if not stripped_val:
+        raise ValidationError("Path cannot be empty.")
+    return Path(stripped_val)
     
 # repeatedly prompt user for input and parse it until user confirms
 def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
@@ -86,15 +86,16 @@ def create_repo() -> None:
 """
     stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
 
-    PKGS = select_pkgs()
-
     # prompt user for repository name and path
     name = prompt_and_parse("Enter the name of the repository", parse_name)
+
+    PKGS = select_pkgs()
+
     if Confirm.ask("[bold cyan]Do you want to create the repository in the current directory?[/bold cyan]"):
         path = Path(os.getcwd())
     else:
         path = prompt_and_parse("Enter the path to the repository", parse_path)
-    
+
     # define base path and create root directory
     BASE_PATH = path / name
     BASE_PATH.mkdir(parents=True, exist_ok=True)
