@@ -34,7 +34,7 @@ NIX_PKGS_MAP = {
     'Python': ['python3'],
     'Java': ['openjdk'],
     'C++': ['gcc'],
-    'Rust': ['rustup'],
+    'Rust': ['rustc-wrapper', 'cargo'],
     'Go': ['go'],
     'JavaScript': ['nodejs'],
     'TypeScript': ['typescript'],
