@@ -44,39 +44,39 @@ If they are not unit tests, describe how you tested the change.
 """
 
 def get_flake(pkgs: list[str]) -> str:
-    pkgs_str = "\n".join(f"\t\t\t\t\t\t\t{pkg}" for pkg in pkgs)
+    pkgs_str = "\n".join(f"              {pkg}" for pkg in pkgs)
     return f"""
 {{
-    description = "init - Generate's base development environment";
+  description = "init - Generate's base development environment";
 
-    inputs = {{
-        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-        flake-utils.url = "github:numtide/flake-utils";
-    }};
+  inputs = {{
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+  }};
 
-    outputs = {{
-        self,
-        nixpkgs,
-        flake-utils,
-    }} @ inputs:
-        flake-utils.lib.eachDefaultSystem (
-            system: let
-                pkgs = import nixpkgs {{inherit system;}};
-            in
-                with pkgs; {{
-                    formatter = alejandra;
-                    devShells.default = mkShell {{
-                        nativeBuildInputs = [
-                            just
-                            shellcheck
+  outputs = {{
+    self,
+    nixpkgs,
+    flake-utils,
+  }} @ inputs:
+    flake-utils.lib.eachDefaultSystem (
+      system: let
+        pkgs = import nixpkgs {{inherit system;}};
+      in
+        with pkgs; {{
+          formatter = alejandra;
+          devShells.default = mkShell {{
+            nativeBuildInputs = [
+              just
+              shellcheck
 {pkgs_str}
-                        ];
+            ];
 
-                        shellHook = ''
-                            echo DEV SHELL ACTIVATED
-                        '';
-                    }};
-                }}
-        );
+            shellHook = ''
+              echo DEV SHELL ACTIVATED
+            '';
+          }};
+        }}
+    );
 }}
 """
