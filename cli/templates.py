@@ -67,6 +67,8 @@ def get_flake(pkgs: list[str]) -> str:
                     formatter = alejandra;
                     devShells.default = mkShell {{
                         nativeBuildInputs = [
+                            just
+                            shellcheck
 {pkgs_str}
                         ];
 
