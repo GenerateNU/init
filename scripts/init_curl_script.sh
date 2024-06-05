@@ -31,11 +31,10 @@ curl -L $TEMPLATES_URL -o templates.py 2>&1
 curl -L $CLI_URL -o cli.py 2>&1
 chmod +x cli.py
 ./cli.py
-wait $!
 
 # Clean up the downloaded files
-rm install-nix.sh
-rm get_os.sh
+# rm install-nix.sh
+# rm get_os.sh
 rm cli.py
 rm utils.py
 rm templates.py
