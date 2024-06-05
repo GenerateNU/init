@@ -26,9 +26,9 @@ check_exit_status() {
 # check_exit_status
 
 # Download scripts to run cli
-curl -L $UTILS_URL -o utils.py 2>&1
-curl -L $TEMPLATES_URL -o templates.py 2>&1
-curl -L $CLI_URL -o cli.py 2>&1
+curl -L $UTILS_URL -o utils.py
+curl -L $TEMPLATES_URL -o templates.py
+curl -L $CLI_URL -o cli.py
 chmod +x cli.py
 ./cli.py
 
