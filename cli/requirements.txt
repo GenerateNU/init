@@ -1,4 +1,0 @@
-inquirer
-pathlib
-rich
-typer

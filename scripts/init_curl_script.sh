@@ -14,16 +14,18 @@ UTILS_URL="$GITHUB_NEW_URL/cli/utils.py"
 # Make sure command exits if error detected
 check_exit_status() {
   if [ $? -ne 0 ]; then
+    rm install_nix.sh
+    rm get_os.sh
     exit 1
   fi
 }
 
 # Download and run the Nix installation script
 curl -L $GET_OS_URL -o get_os.sh 
-curl -L $INSTALL_NIX_URL -o install-nix.sh
+curl -L $INSTALL_NIX_URL -o install_nix.sh
 chmod +x get_os.sh
-chmod +x install-nix.sh
-./install-nix.sh
+chmod +x install_nix.sh
+./install_nix.sh
 check_exit_status
 
 # Download scripts to run cli
