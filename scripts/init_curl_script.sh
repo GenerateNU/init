@@ -18,7 +18,7 @@ check_exit_status() {
 }
 
 # Download and run the Nix installation script
-# curl -L $GET_OS_URL -o get_os.sh
+# curl -L $GET_OS_URL -o get_os.sh 
 # curl -L $INSTALL_NIX_URL -o install-nix.sh
 # chmod +x get_os.sh
 # chmod +x install-nix.sh
@@ -26,9 +26,9 @@ check_exit_status() {
 # check_exit_status
 
 # Download scripts to run cli
-curl -L $UTILS_URL -o utils.py
-curl -L $TEMPLATES_URL -o templates.py
-curl -L $CLI_URL -o cli.py
+curl -L $UTILS_URL -o utils.py 2>&1
+curl -L $TEMPLATES_URL -o templates.py 2>&1
+curl -L $CLI_URL -o cli.py 2>&1
 chmod +x cli.py
 ./cli.py
 wait $!
