@@ -11,6 +11,11 @@ CLI_URL="$GITHUB_NEW_URL/cli/cli.py"
 TEMPLATES_URL="$GITHUB_NEW_URL/cli/templates.py"
 UTILS_URL="$GITHUB_NEW_URL/cli/utils.py"
 
+check_exit_status() {
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+}
 
 # Download and run the Nix installation script
 # curl -L $GET_OS_URL -o get_os.sh
@@ -18,16 +23,19 @@ UTILS_URL="$GITHUB_NEW_URL/cli/utils.py"
 # chmod +x get_os.sh
 # chmod +x install-nix.sh
 # ./install-nix.sh
-# rm install-nix.sh
-# rm get_os.sh
+# check_exit_status
 
-# Download and run the Python script
+# Download scripts to run cli
 curl -L $UTILS_URL -o utils.py
 curl -L $TEMPLATES_URL -o templates.py
 curl -L $CLI_URL -o cli.py
 chmod +x cli.py
 ./cli.py
 wait $!
+
+# Clean up the downloaded files
+rm install-nix.sh
+rm get_os.sh
 rm cli.py
 rm utils.py
 rm templates.py
