@@ -45,4 +45,28 @@ jobs:
         uses: actions/checkout@v4
       - name: TODO
         run: echo TODO
-...
+  e2e-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v4
+      - name: set up python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: install dependencies
+        run: pip3 install -r cli/requirements.txt
+      - name: install expect on ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y expect
+      - name: install expect on macos
+        if: matrix.os == 'macos-latest'
+        run: brew install expect
+      - name: run e2e test shell script
+        run: |
+          chmod +x scripts/e2e_test.sh
+          ./scripts/e2e_test.sh
+  
