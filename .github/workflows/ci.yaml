@@ -16,36 +16,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }
-    steps:
-      - name: check out repository
-        uses: actions/checkout@v4
-      - name: TODO
-        run: echo TODO
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }
-    steps:
-      - name: check out repository
-        uses: actions/checkout@v4
-      - name: TODO
-        run: echo TODO
-  test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }
-    steps:
-      - name: check out repository
-        uses: actions/checkout@v4
-      - name: TODO
-        run: echo TODO
+  # lint:
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest]
+  #   runs-on: ${{ matrix.os }
+  #   steps:
+  #     - name: check out repository
+  #       uses: actions/checkout@v4
+  #     - name: TODO
+  #       run: echo TODO
+  # build:
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest]
+  #   runs-on: ${{ matrix.os }
+  #   steps:
+  #     - name: check out repository
+  #       uses: actions/checkout@v4
+  #     - name: TODO
+  #       run: echo TODO
+  # test:
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest]
+  #   runs-on: ${{ matrix.os }
+  #   steps:
+  #     - name: check out repository
+  #       uses: actions/checkout@v4
+  #     - name: TODO
+  #       run: echo TODO
   e2e-test:
     strategy:
       matrix:
