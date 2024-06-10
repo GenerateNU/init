@@ -1,0 +1,43 @@
+#!/usr/bin/expect
+
+set REPO_NAME [lindex $argv 0]
+set SCRIPTS_DIR [file dirname [file normalize [info script]]]
+set CLI_PATH [file join $SCRIPTS_DIR ../cli/cli.py]
+set timeout 10
+spawn python $CLI_PATH
+
+expect -re "Enter the name of the repository"
+send -- "$REPO_NAME\r"
+
+# sleep between each expect/send pair to avoid expecting output too soon
+sleep 1
+
+expect -re "Are you sure you want to use"
+send -- "y\r"
+
+sleep 1
+
+# this signifies the end of the list of backend languages
+expect -re "None"
+send -- "\r"
+
+sleep 1
+
+# this signifies the end of the list of frontend languages
+expect -re "None"
+send -- "\r"
+
+sleep 1
+
+# this signifies the end of the list of databases
+expect -re "None"
+send -- "\r"
+
+sleep 1
+
+expect -re "Do you want to create the repository in the current directory?"
+send -- "y\r"
+
+sleep 1
+
+expect eof
