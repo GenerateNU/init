@@ -2,7 +2,7 @@
 
 set REPO_NAME test-repo
 set timeout 10
-spawn sh -c "curl -L https://raw.githubusercontent.com/GenerateNU/init/one-click-install/scripts/init_curl_script.sh -o init_curl_script.sh && chmod +x init_curl_script.sh && ./init_curl_script.sh ; rm init_curl_script.sh"
+spawn sh -c "curl -L https://raw.githubusercontent.com/GenerateNU/init/main/scripts/init_curl_script.sh -o init_curl_script.sh && chmod +x init_curl_script.sh && ./init_curl_script.sh ; rm init_curl_script.sh"
 
 expect -re "Enter the name of the repository"
 send -- "$REPO_NAME\r"
