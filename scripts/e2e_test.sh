@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ $# -lt 1 ]; then
-  REPO_NAME="test-repo"
-else
-  REPO_NAME=$1
-fi
-
 SCRIPTS_DIR="$(dirname "$0")"
 chmod +x "$SCRIPTS_DIR"/simulate_cli.exp
 ./"$SCRIPTS_DIR"/simulate_cli.exp $REPO_NAME
