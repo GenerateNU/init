@@ -1,10 +1,8 @@
 #!/usr/bin/expect
 
-set REPO_NAME [lindex $argv 0]
-set SCRIPTS_DIR [file dirname [file normalize [info script]]]
-set CLI_PATH [file join $SCRIPTS_DIR ../cli/cli.py]
+set REPO_NAME test-repo
 set timeout 10
-spawn python $CLI_PATH
+spawn sh -c "curl -L https://raw.githubusercontent.com/GenerateNU/init/one-click-install/scripts/init_curl_script.sh -o init_curl_script.sh && chmod +x init_curl_script.sh && ./init_curl_script.sh ; rm init_curl_script.sh"
 
 expect -re "Enter the name of the repository"
 send -- "$REPO_NAME\r"
