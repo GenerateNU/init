@@ -1,3 +1,6 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i python3 -p python3Packages.typing python3Packages.inquirer python3Packages.typer python3Packages.rich
+
 import os
 import sys
 from typing import Callable
@@ -7,15 +10,14 @@ from pathlib import Path
 from rich.console import Console
 from rich.prompt import Confirm, Prompt
 from templates import get_flake, MIT_LICENSE, PULL_REQUEST_TEMPLATE
-from utils import Directory, File, ValidationError, CustomTheme
+from utils import (
+    Directory, File, ValidationError, CustomTheme, STARTUP_ART,
+    BACKEND_LANGUAGES, FRONTEND_LANGUAGES, DATABASES, NIX_PKGS_MAP
+)
 
 app = typer.Typer(add_completion=False)
 stdout_console = Console()
 stderr_console = Console(stderr=True)
-
-BACKEND_LANGUAGES = ['Python', 'Java', 'C++', 'Rust', 'Go', 'None']
-FRONTEND_LANGUAGES = ['JavaScript', 'TypeScript', 'None']
-DATABASES = ['PostgreSQL', 'MySQL', 'SQLite', 'MongoDB', 'None']
 
 def select_pkgs() -> str:
     bold_cyan_code = '\033[1;96m'
@@ -78,18 +80,14 @@ def create_files(files: list[File], base_path: Path) -> None:
 
 @app.command()
 def create_repo() -> None:
-    startup_art = """
-   _____  ____________
-  /  _/ |/ /  _/_  __/
- _/ //    // /  / /   
-/___/_/|_/___/ /_/    
-"""
-    stdout_console.print(f"[bold dodger_blue1]{startup_art}[/bold dodger_blue1]")
+    stdout_console.print(f"[bold dodger_blue1]{STARTUP_ART}[/bold dodger_blue1]")
 
     # prompt user for repository name and path
     name = prompt_and_parse("Enter the name of the repository", parse_name)
 
-    PKGS = select_pkgs()
+    nix_pkgs = []
+    for pkg in select_pkgs():
+        nix_pkgs.extend(NIX_PKGS_MAP[pkg]) 
 
     if Confirm.ask("[bold cyan]Do you want to create the repository in the current directory?[/bold cyan]"):
         path = Path(os.getcwd())
@@ -97,13 +95,13 @@ def create_repo() -> None:
         path = prompt_and_parse("Enter the path to the repository", parse_path)
 
     # define base path and create root directory
-    BASE_PATH = path / name
-    BASE_PATH.mkdir(parents=True, exist_ok=True)
+    base_path = path / name
+    base_path.mkdir(parents=True, exist_ok=True)
 
     # list of predefined objects to create
     objects = [
         # root files
-        File("flake.nix", content=get_flake(PKGS)),
+        File("flake.nix", content=get_flake(nix_pkgs)),
         File("LICENSE", content=MIT_LICENSE),
         File(".gitignore"),
         File("README.md"),
@@ -123,8 +121,8 @@ def create_repo() -> None:
     directories = [obj for obj in objects if isinstance(obj, Directory)]
     files = [obj for obj in objects if isinstance(obj, File)]
 
-    create_directories(directories, BASE_PATH)
-    create_files(files, BASE_PATH)
+    create_directories(directories, base_path)
+    create_files(files, base_path)
 
 if __name__ == "__main__":
     app()
