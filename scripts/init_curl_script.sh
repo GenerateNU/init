@@ -2,14 +2,13 @@
 
 # base URL for raw files
 GITHUB_REPO_URL="https://raw.githubusercontent.com/GenerateNU/init/main"
-GITHUB_NEW_URL="https://raw.githubusercontent.com/GenerateNU/init/create-executable"
 
 # Full URLs
 GET_OS_URL="$GITHUB_REPO_URL/scripts/get_os.sh"
 INSTALL_NIX_URL="$GITHUB_REPO_URL/scripts/install_nix.sh"
-CLI_URL="$GITHUB_NEW_URL/cli/cli.py"
-TEMPLATES_URL="$GITHUB_NEW_URL/cli/templates.py"
-UTILS_URL="$GITHUB_NEW_URL/cli/utils.py"
+CLI_URL="$GITHUB_REPO_URL/cli/cli.py"
+TEMPLATES_URL="$GITHUB_REPO_URL/cli/templates.py"
+UTILS_URL="$GITHUB_REPO_URL/cli/utils.py"
 
 # Make sure command exits if error detected
 check_exit_status() {
