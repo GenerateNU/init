@@ -1,3 +1,5 @@
+import pyfiglet 
+
 MIT_LICENSE = """
 MIT License
 
@@ -43,7 +45,10 @@ If they are not unit tests, describe how you tested the change.
 - [ ] New and existing unit tests pass locally with my changes
 """
 
-def get_flake(pkgs: list[str]) -> str:
+def get_ascii_art(text: str) -> str:
+  return pyfiglet.figlet_format(text, font = "small_slant"  ) 
+
+def get_flake(pkgs: list[str], name: str) -> str:
     pkgs_str = "\n".join(f"              {pkg}" for pkg in pkgs)
     return f"""
 {{
@@ -73,7 +78,9 @@ def get_flake(pkgs: list[str]) -> str:
             ];
 
             shellHook = ''
-              echo DEV SHELL ACTIVATED
+              printf "\\033[0;1;36m
+{get_ascii_art(name)}
+DEVSHELL ACTIVATED\\033[0m\\n"
             '';
           }};
         }}
