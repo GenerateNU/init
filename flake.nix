@@ -24,7 +24,13 @@
             ];
 
             shellHook = ''
-              echo DEV SHELL ACTIVATED
+              printf "\033[0;1;36m
+                 _      _ __ 
+                (_)__  (_) /_
+               / / _ \/ / __/
+              /_/_//_/_/\__/ 
+
+              DEVSHELL ACTIVATED\033[0m\n"
             '';
           };
         }

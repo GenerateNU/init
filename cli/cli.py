@@ -1,5 +1,5 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -i python3 -p python3Packages.typing python3Packages.inquirer python3Packages.typer python3Packages.rich
+#! nix-shell -i python3 -p python3Packages.typing python3Packages.inquirer python3Packages.typer python3Packages.rich python3Packages.pyfiglet
 
 import os
 import sys
@@ -9,9 +9,9 @@ import typer
 from pathlib import Path
 from rich.console import Console
 from rich.prompt import Confirm, Prompt
-from templates import get_flake, MIT_LICENSE, PULL_REQUEST_TEMPLATE
+from templates import get_ascii_art, get_flake, MIT_LICENSE, PULL_REQUEST_TEMPLATE
 from utils import (
-    Directory, File, ValidationError, CustomTheme, STARTUP_ART,
+    Directory, File, ValidationError, CustomTheme,
     BACKEND_LANGUAGES, FRONTEND_LANGUAGES, DATABASES, NIX_PKGS_MAP
 )
 
@@ -80,7 +80,7 @@ def create_files(files: list[File], base_path: Path) -> None:
 
 @app.command()
 def create_repo() -> None:
-    stdout_console.print(f"[bold dodger_blue1]{STARTUP_ART}[/bold dodger_blue1]")
+    stdout_console.print(f"[bold cyan]{get_ascii_art('init')}[/bold cyan]")
 
     # prompt user for repository name and path
     name = prompt_and_parse("Enter the name of the repository", parse_name)
@@ -101,7 +101,7 @@ def create_repo() -> None:
     # list of predefined objects to create
     objects = [
         # root files
-        File("flake.nix", content=get_flake(nix_pkgs)),
+        File("flake.nix", content=get_flake(nix_pkgs, name)),
         File("LICENSE", content=MIT_LICENSE),
         File(".gitignore"),
         File("README.md"),
