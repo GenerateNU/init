@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#! /usr/bin/env sh
 
 # Ensure at least one command was provided.
 if [ $# -lt 1 ]; then

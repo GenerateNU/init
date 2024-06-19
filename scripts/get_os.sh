@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#! /usr/bin/env sh
 
 # Hacky way to determine if a Linux system is actually Windows Subsystem for Linux.
 is_wsl() {
