@@ -16,39 +16,40 @@ UTILS_URL="$REPO_URL/src/utils.py"
 # Make sure command exits if error detected.
 check_exit_status() {
   if [ $? -ne 0 ]; then
-    rm /tmp/install_nix.sh
-    rm /tmp/get_os.sh
+    rm install_nix.sh
+    rm get_os.sh
     exit 1
   fi
 }
 
 # Download and run the Nix installation script.
-curl -L $GET_OS_URL -o /tmp/get_os.sh
-curl -L $INSTALL_NIX_URL -o /tmp/install_nix.sh
-chmod +x /tmp/get_os.sh
-chmod +x /tmp/install_nix.sh
-./tmp/install_nix.sh
+cd /tmp
+curl -L $GET_OS_URL -o get_os.sh
+curl -L $INSTALL_NIX_URL -o install_nix.sh
+chmod +x get_os.sh
+chmod +x install_nix.sh
+./install_nix.sh
 check_exit_status
 
 # Download scripts to run CLI.
-curl -L $MAIN_URL -o /tmp/__main__.py
-curl -L $CLI_URL -o /tmp/cli.py
-curl -L $OPTIONS_URL -o /tmp/options.py
-curl -L $TEMPLATES_URL -o /tmp/templates.py
-curl -L $TREE_URL -o /tmp/tree.py
-curl -L $UTILS_URL -o /tmp/utils.py
-chmod +x /tmp/__main__.py
-./tmp/__main__.py
+curl -L $MAIN_URL -o __main__.py
+curl -L $CLI_URL -o cli.py
+curl -L $OPTIONS_URL -o options.py
+curl -L $TEMPLATES_URL -o templates.py
+curl -L $TREE_URL -o tree.py
+curl -L $UTILS_URL -o utils.py
+chmod +x __main__.py
+./__main__.py
 
 # Clean up files.
-rm /tmp/install-nix.sh
-rm /tmp/get_os.sh
+rm install-nix.sh
+rm get_os.sh
 
-rm /tmp/__main__.py
-rm /tmp/cli.py
-rm /tmp/options.py
-rm /tmp/templates.py
-rm /tmp/tree.py
-rm /tmp/utils.py
+rm __main__.py
+rm cli.py
+rm options.py
+rm templates.py
+rm tree.py
+rm utils.py
 
 rm -rf __pycache__
