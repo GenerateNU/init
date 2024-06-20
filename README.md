@@ -1,13 +1,13 @@
 # init
 Generating reproducible development environments
 
-## Running init
+## Usage
 
 To quickly set up your repository and development environment:
 
 1. Open your terminal
-2. Run the following command to download Nix and run the cli script to create your repo:
+2. Run the following command to download Nix and run the CLI to create your repo:
 
    ```console
-   curl -L https://raw.githubusercontent.com/GenerateNU/init/main/install.sh | sh -s --
+   curl -sL https://raw.githubusercontent.com/GenerateNU/init/main/install.sh | sudo sh -s --
    ```

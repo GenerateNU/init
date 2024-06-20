@@ -2,12 +2,12 @@
 name: ci
 
 on:
-  push:
-    branches:
-      - "main"
   pull_request:
     branches:
       - "main"
+  push:
+    branches:
+      - "*"
   workflow_dispatch:
 
 concurrency:
@@ -19,30 +19,30 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }
+    runs-on: ${{ matrix.os }}
     steps:
       - name: check out repository
         uses: actions/checkout@v4
-      - name: TODO
-        run: echo TODO
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }
-    steps:
-      - name: check out repository
-        uses: actions/checkout@v4
-      - name: TODO
-        run: echo TODO
+      - name: install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: activate devshell
+        run: nix develop
+      - name: check Python formatting
+        run: black --check .
+      - name: lint shell scripts
+        run: find . -type f -name '*.sh' | xargs shellcheck
   test:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }
+    runs-on: ${{ matrix.os }}
     steps:
       - name: check out repository
         uses: actions/checkout@v4
-      - name: TODO
-        run: echo TODO
+      - name: install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: activate devshell
+        run: nix develop
+      - name: test
+        run: echo TODO && exit 1
 ...

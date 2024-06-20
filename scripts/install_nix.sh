@@ -6,7 +6,7 @@ install_nix() {
 }
 
 # Ensure root permissions.
-if ! ./"$(dirname "$0")"/has_root_permissions.sh; then
+if [ "$(id -u)" -ne 0 ]; then
     printf "\033[31;1merror\033[0m: root permissions required\n"
     exit 1
 fi
