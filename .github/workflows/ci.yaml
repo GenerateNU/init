@@ -26,7 +26,7 @@ jobs:
       - name: install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: activate devshell
-        run: nix develop
+        run: nix develop --impure
       - name: check Python formatting
         run: black --check .
       - name: lint shell scripts
@@ -42,7 +42,7 @@ jobs:
       - name: install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: activate devshell
-        run: nix develop
+        run: nix develop --impure
       - name: test
         run: echo TODO && exit 1
 ...
