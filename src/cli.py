@@ -129,7 +129,6 @@ def prompt_and_parse(prompt_text: str, parse: Callable) -> str:
 
 @app.command()
 def create_repo() -> None:
-    print(Language.PYTHON)
     stdout_console.print(f"[bold cyan]{get_ascii_art('init')}[/bold cyan]")
 
     # prompt user for repository name and path
