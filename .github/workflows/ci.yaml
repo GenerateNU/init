@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: activate devshell
@@ -38,7 +38,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: activate devshell
